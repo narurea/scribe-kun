@@ -33,10 +33,11 @@ v0.1（開発中）。仕様書 6.2 の「実際の動画で速度と精度を�
 Xcode プロジェクトは [XcodeGen](https://github.com/yonaskolb/XcodeGen) で `project.yml` から生成します（`.xcodeproj` はリポジトリに含めません）。
 
 ```sh
-brew install xcodegen      # 初回のみ
 ./scripts/bootstrap.sh     # Transcribe.xcodeproj を生成
 open Transcribe.xcodeproj
 ```
+
+Homebrew は不要です。XcodeGen が入っていなければ、`bootstrap.sh` が固定バージョンを `.tools/` にダウンロードして（チェックサム確認つき）使います。
 
 Xcode で `Transcribe` スキームを選んで ⌘R で実行します。
 whisper.cpp は公式リリースの XCFramework を Swift Package（[`Packages/Whisper`](Packages/Whisper/Package.swift)）経由で取得するので、初回ビルド時に自動でダウンロードされます。
