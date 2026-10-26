@@ -1,13 +1,26 @@
-# ビデオから文字起こし（Transcribe）
+<p align="center">
+  <img src="Transcribe/Resources/Assets.xcassets/AppIcon.appiconset/icon_128x128@2x.png" width="128" alt="scribe-kun のアイコン">
+</p>
+
+# scribe-kun（ビデオから文字起こし）
 
 動画・音声ファイルをウィンドウにドロップするだけで、**Mac の中だけで**文字起こししてテキストファイルに書き出す macOS アプリです。
 音声や文字起こし結果を外部に送信することはありません（通信するのは初回のモデルダウンロードだけです）。
 
+- 対象：macOS 14 Sonoma 以降、Apple Silicon（M1 以降）の Mac
 - 実装：Swift / SwiftUI ＋ [whisper.cpp](https://github.com/ggml-org/whisper.cpp)（Metal で GPU 処理）
-- 対象：macOS 14 Sonoma 以降、Apple Silicon（M1 以降）
 - 仕様書：[docs/SPEC.md](docs/SPEC.md)
 
-> アプリ名は仮で「Transcribe」です。
+## インストール
+
+1. [Releases](https://github.com/narurea/video-kara-mojiokoshi/releases) から `scribe-kun-<バージョン>.dmg` をダウンロードして開く
+2. `scribe-kun` を `Applications` フォルダにドラッグする
+3. 初回だけ、次の手順で開く（Apple の公証を受けていないため、そのままでは開けません）
+   1. アプリケーションフォルダの `scribe-kun` をダブルクリック →「開けません」と出たら「完了」を押す
+   2. **システム設定 → プライバシーとセキュリティ** を開き、下の方にある「“scribe-kun”は…」の横の **「このまま開く」** を押す
+   3. もう一度「開く」を押し、パスワードを入力する
+
+2回目以降は普通に開けます。
 
 ## できること
 
@@ -23,28 +36,6 @@
   | 字幕 | `元の名前.srt` | SRT 字幕 |
 - 同名ファイルがあるときは `_2`, `_3` … を付けて上書きしません
 - 完了時に通知と「Finderで表示」ボタン
-
-## 開発状況
-
-v0.1（開発中）。仕様書 6.2 の「実際の動画で速度と精度を測る」以降はまだです。
-
-## ビルド方法
-
-Xcode プロジェクトは [XcodeGen](https://github.com/yonaskolb/XcodeGen) で `project.yml` から生成します（`.xcodeproj` はリポジトリに含めません）。
-
-```sh
-./scripts/bootstrap.sh     # Transcribe.xcodeproj を生成
-open Transcribe.xcodeproj
-```
-
-Homebrew は不要です。XcodeGen が入っていなければ、`bootstrap.sh` が固定バージョンを `.tools/` にダウンロードして（チェックサム確認つき）使います。
-
-Xcode で `Transcribe` スキームを選んで ⌘R で実行します。
-whisper.cpp は公式リリースの XCFramework を Swift Package（[`Packages/Whisper`](Packages/Whisper/Package.swift)）経由で取得するので、初回ビルド時に自動でダウンロードされます。
-
-署名は「Sign to Run Locally」（アドホック署名）になっています。自分の Apple ID で署名したい場合は Xcode の Signing & Capabilities で Team を選んでください。
-
-テストは ⌘U（`TranscribeTests`：txt / srt の整形と保存ファイル名のテスト）。
 
 ## 使い方
 
@@ -62,11 +53,51 @@ whisper.cpp は公式リリースの XCFramework を Swift Package（[`Packages/
 | large-v3 | 約3.1GB | 最も高精度だが遅い |
 | small | 約490MB | 軽量・高速 |
 
-モデルは `~/Library/Containers/<Bundle ID>/Data/Library/Application Support/Transcribe/models/` に保存されます（App Sandbox のためコンテナ内になります）。
+モデルは `~/Library/Containers/io.github.narurea.scribe-kun/Data/Library/Application Support/scribe-kun/models/` に保存されます（App Sandbox のためコンテナ内になります）。
 
-## 配布について
+## 開発状況
 
-ダウンロードした `.app` を開くと「開発元を確認できない」と表示される場合は、Finder でアプリを右クリック →「開く」を選ぶか、ソースからビルドしてください（公証していないため）。
+v0.1（開発中）。仕様書 6.2 の「実際の動画で速度と精度を測る」以降はまだです。
+
+## 開発者向け
+
+### ビルド
+
+Xcode プロジェクトは [XcodeGen](https://github.com/yonaskolb/XcodeGen) で `project.yml` から生成します（`.xcodeproj` はリポジトリに含めません）。
+
+```sh
+./scripts/bootstrap.sh     # Transcribe.xcodeproj を生成
+open Transcribe.xcodeproj
+```
+
+Homebrew は不要です。XcodeGen が入っていなければ、`bootstrap.sh` が固定バージョンを `.tools/` にダウンロードして（チェックサム確認つき）使います。
+
+Xcode で `Transcribe` スキームを選んで ⌘R で実行、⌘U でテストします。
+whisper.cpp は公式リリースの XCFramework を Swift Package（[`Packages/Whisper`](Packages/Whisper/Package.swift)）経由で取得するので、初回ビルド時に自動でダウンロードされます。
+
+署名は「Sign to Run Locally」（アドホック署名）です。
+
+### DMG を作る
+
+```sh
+./scripts/make-dmg.sh 0.1.0    # build/scribe-kun-0.1.0.dmg ができる
+```
+
+### リリース
+
+`v0.1.0` のようなタグを push すると、GitHub Actions が DMG を作って [Releases](https://github.com/narurea/video-kara-mojiokoshi/releases) に公開します（[`.github/workflows/release.yml`](.github/workflows/release.yml)）。
+`v0.x` はプレリリース扱いになります。
+
+```sh
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+ブランチへの push ごとに、ビルド・テストと DMG の試作も自動で行われます（[`.github/workflows/ci.yml`](.github/workflows/ci.yml)）。
+
+### アイコン
+
+`scripts/make-icon.py` で描いています（要 Pillow）。変更したら `python3 scripts/make-icon.py` で `AppIcon.appiconset` を作り直します。
 
 ## ライセンス
 
