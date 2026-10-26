@@ -1,7 +1,14 @@
 name: Release
 
-# Push a tag such as v0.1.0 to build the DMG and publish it on GitHub Releases.
+# Publishes the DMG on GitHub Releases. Either:
+# - Actions tab → Release → Run workflow, and enter a version such as 0.1.0, or
+# - push a tag such as v0.1.0.
 on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "公開するバージョン（例: 0.1.0）"
+        required: true
   push:
     tags: ["v*"]
 
@@ -13,16 +20,38 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Decide version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            version="${INPUT_VERSION#v}"
+          else
+            version="${GITHUB_REF_NAME#v}"
+          fi
+          case "$version" in
+            [0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "バージョンは 0.1.0 のような形式で入力してください: $version" >&2; exit 1 ;;
+          esac
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+          echo "TAG=v$version" >> "$GITHUB_ENV"
       - name: Build DMG
-        run: ./scripts/make-dmg.sh "${GITHUB_REF_NAME#v}"
+        run: ./scripts/make-dmg.sh "$VERSION"
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            # The release was already created (e.g. from the GitHub web UI): just attach the DMG.
+            gh release upload "$TAG" build/*.dmg --clobber
+            exit 0
+          fi
           prerelease=""
-          case "$GITHUB_REF_NAME" in v0.*) prerelease="--prerelease" ;; esac
-          gh release create "$GITHUB_REF_NAME" build/*.dmg \
-            --title "scribe-kun $GITHUB_REF_NAME" \
+          case "$TAG" in v0.*) prerelease="--prerelease" ;; esac
+          # Creates the tag on this commit if it does not exist yet.
+          gh release create "$TAG" build/*.dmg \
+            --target "$GITHUB_SHA" \
+            --title "scribe-kun $TAG" \
             --notes-file .github/release-notes.md \
             --generate-notes \
             $prerelease

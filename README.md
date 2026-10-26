@@ -85,13 +85,8 @@ whisper.cpp は公式リリースの XCFramework を Swift Package（[`Packages/
 
 ### リリース
 
-`v0.1.0` のようなタグを push すると、GitHub Actions が DMG を作って [Releases](https://github.com/narurea/scribe-kun/releases) に公開します（[`.github/workflows/release.yml`](.github/workflows/release.yml)）。
-`v0.x` はプレリリース扱いになります。
-
-```sh
-git tag v0.1.0
-git push origin v0.1.0
-```
+GitHub の **Actions** タブ → 左の **Release** → **Run workflow** を押し、バージョン（例：`0.1.0`）を入力して実行すると、DMG が作られて [Releases](https://github.com/narurea/scribe-kun/releases) に公開されます（[`.github/workflows/release.yml`](.github/workflows/release.yml)）。
+`v0.1.0` のようなタグを push しても同じです。`v0.x` はプレリリース扱いになります。
 
 ブランチへの push ごとに、ビルド・テストと DMG の試作も自動で行われます（[`.github/workflows/ci.yml`](.github/workflows/ci.yml)）。
 
