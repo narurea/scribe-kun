@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+	<!-- Model download from Hugging Face (the only network access). -->
+	<key>com.apple.security.network.client</key>
+	<true/>
+	<!-- Files chosen in the open panel or dropped onto the window, and the output folder. -->
+	<key>com.apple.security.files.user-selected.read-write</key>
+	<true/>
+	<!-- Keep access to the chosen output folder across launches. -->
+	<key>com.apple.security.files.bookmarks.app-scope</key>
+	<true/>
+	<!-- Default output folder (~/Documents/Transcripts) before the user picks one. -->
+	<key>com.apple.security.temporary-exception.files.home-relative-path.read-write</key>
+	<array>
+		<string>/Documents/Transcripts/</string>
+	</array>
+</dict>
+</plist>
