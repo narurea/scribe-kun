@@ -13,7 +13,7 @@
 
 ## インストール
 
-1. [Releases](https://github.com/narurea/video-kara-mojiokoshi/releases) から `scribe-kun-<バージョン>.dmg` をダウンロードして開く
+1. [Releases](https://github.com/narurea/scribe-kun/releases) から `scribe-kun-<バージョン>.dmg` をダウンロードして開く
 2. `scribe-kun` を `Applications` フォルダにドラッグする
 3. 初回だけ、次の手順で開く（Apple の公証を受けていないため、そのままでは開けません）
    1. アプリケーションフォルダの `scribe-kun` をダブルクリック →「開けません」と出たら「完了」を押す
@@ -85,7 +85,7 @@ whisper.cpp は公式リリースの XCFramework を Swift Package（[`Packages/
 
 ### リリース
 
-`v0.1.0` のようなタグを push すると、GitHub Actions が DMG を作って [Releases](https://github.com/narurea/video-kara-mojiokoshi/releases) に公開します（[`.github/workflows/release.yml`](.github/workflows/release.yml)）。
+`v0.1.0` のようなタグを push すると、GitHub Actions が DMG を作って [Releases](https://github.com/narurea/scribe-kun/releases) に公開します（[`.github/workflows/release.yml`](.github/workflows/release.yml)）。
 `v0.x` はプレリリース扱いになります。
 
 ```sh
@@ -99,8 +99,22 @@ git push origin v0.1.0
 
 `scripts/make-icon.py` で描いています（要 Pillow）。変更したら `python3 scripts/make-icon.py` で `AppIcon.appiconset` を作り直します。
 
+## ご利用にあたっての注意（免責事項）
+
+- 本アプリは無保証で提供されます。動作、文字起こし結果の正確さ、特定の目的への適合性などについて、作者は一切保証しません
+- 本アプリの利用方法は問わず、利用によって生じたいかなる損害・不利益・トラブル（データの消失、誤った文字起こしによる損害、第三者との紛争などを含む）についても、作者は責任を負いません。**すべて利用者自身の責任でご利用ください**
+- 文字起こしする動画・音声の著作権や肖像権、プライバシーなどの権利関係は、利用者自身で確認してください
+
 ## ライセンス
 
-[MIT](LICENSE)
+[クリエイティブ・コモンズ 表示 - 非営利 - 改変禁止 4.0 国際（CC BY-NC-ND 4.0）](LICENSE)
 
-whisper.cpp も MIT ライセンスです。
+| | |
+| --- | --- |
+| ✅ 再配布 | してよい（作者名「Rea Narukawa」とこのリポジトリへのリンク、ライセンスを明記すること） |
+| 🚫 改造・改変したものの配布 | 禁止 |
+| 🚫 営利目的での利用・配布 | 禁止（有料での配布・販売、配布による収益化を含む） |
+
+正式な条件は [LICENSE](LICENSE) の本文が優先します。
+
+同梱している whisper.cpp は MIT ライセンスです（[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)）。

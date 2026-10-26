@@ -10,3 +10,9 @@
 2回目以降は普通に開けます。
 
 対象：macOS 14 Sonoma 以降、Apple Silicon（M1 以降）の Mac
+
+## 注意
+
+本アプリは無保証で提供されます。利用によって生じたいかなる損害についても作者は責任を負いません。すべて利用者自身の責任でご利用ください。
+
+ライセンス：[CC BY-NC-ND 4.0](https://github.com/narurea/scribe-kun/blob/main/LICENSE)（再配布可・改変したものの配布禁止・営利利用禁止）
