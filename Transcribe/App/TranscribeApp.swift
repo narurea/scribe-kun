@@ -16,7 +16,7 @@ struct TranscribeApp: App {
     }
 
     var body: some Scene {
-        Window("Transcribe", id: "main") {
+        Window("scribe-kun", id: "main") {
             MainView()
                 .environment(queue)
                 .environment(modelManager)

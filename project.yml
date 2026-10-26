@@ -32,11 +32,13 @@ targets:
         product: whisper
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: io.github.narurea.Transcribe
-        PRODUCT_NAME: Transcribe
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.narurea.scribe-kun
+        # The app is called scribe-kun; the Swift module and Xcode target keep the name Transcribe.
+        PRODUCT_NAME: scribe-kun
+        PRODUCT_MODULE_NAME: Transcribe
         ARCHS: arm64
         GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_CFBundleDisplayName: Transcribe
+        INFOPLIST_KEY_CFBundleDisplayName: scribe-kun
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.productivity
         INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2026 Rea Narukawa. MIT License."
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
@@ -54,7 +56,9 @@ targets:
       - target: Transcribe
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: io.github.narurea.TranscribeTests
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.narurea.scribe-kun.tests
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/scribe-kun.app/Contents/MacOS/scribe-kun"
+        BUNDLE_LOADER: "$(TEST_HOST)"
         ARCHS: arm64
         GENERATE_INFOPLIST_FILE: YES
         CODE_SIGN_IDENTITY: "-"

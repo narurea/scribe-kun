@@ -20,7 +20,7 @@ final class ModelManager {
 
     init(fileManager: FileManager = .default) {
         let support = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-        modelsDirectory = support.appendingPathComponent("Transcribe/models", isDirectory: true)
+        modelsDirectory = support.appendingPathComponent("scribe-kun/models", isDirectory: true)
         try? fileManager.createDirectory(at: modelsDirectory, withIntermediateDirectories: true)
         for model in WhisperModel.allCases {
             states[model] = fileManager.fileExists(atPath: fileURL(for: model).path) ? .downloaded : .notDownloaded
