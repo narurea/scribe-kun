@@ -25,11 +25,13 @@ xcodebuild \
 APP="$DERIVED_DATA/Build/Products/Release/$APP_NAME.app"
 codesign --verify --deep --strict "$APP"
 
-# The DMG holds the app and a shortcut to /Applications to drag it onto.
+# The DMG holds the app, a shortcut to /Applications to drag it onto, and the license files.
 rm -rf "$STAGING" "$DMG"
 mkdir -p "$STAGING"
 ditto "$APP" "$STAGING/$APP_NAME.app"
 ln -s /Applications "$STAGING/Applications"
+cp LICENSE "$STAGING/LICENSE.txt"
+cp THIRD_PARTY_NOTICES.md "$STAGING/THIRD_PARTY_NOTICES.txt"
 hdiutil create -volname "$APP_NAME" -srcfolder "$STAGING" -fs HFS+ -format UDZO -ov "$DMG"
 rm -rf "$STAGING"
 
