@@ -1,0 +1,79 @@
+# Xcode project definition for XcodeGen (https://github.com/yonaskolb/XcodeGen).
+# Run ./scripts/bootstrap.sh to generate Transcribe.xcodeproj.
+name: Transcribe
+options:
+  bundleIdPrefix: io.github.narurea
+  deploymentTarget:
+    macOS: "14.0"
+  developmentLanguage: ja
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+
+packages:
+  Whisper:
+    path: Packages/Whisper
+
+targets:
+  Transcribe:
+    type: application
+    platform: macOS
+    sources:
+      - path: Transcribe
+        excludes:
+          - "Resources/Transcribe.entitlements"
+    dependencies:
+      - package: Whisper
+        product: whisper
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.narurea.scribe-kun
+        # The app is called scribe-kun; the Swift module and Xcode target keep the name Transcribe.
+        PRODUCT_NAME: scribe-kun
+        PRODUCT_MODULE_NAME: Transcribe
+        ARCHS: arm64
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: scribe-kun
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.productivity
+        INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2026 Rea Narukawa. CC BY-NC-ND 4.0."
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_ENTITLEMENTS: Transcribe/Resources/Transcribe.entitlements
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "-"
+        ENABLE_HARDENED_RUNTIME: NO
+
+  TranscribeTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: TranscribeTests
+    dependencies:
+      - target: Transcribe
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.narurea.scribe-kun.tests
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/scribe-kun.app/Contents/MacOS/scribe-kun"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        ARCHS: arm64
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_IDENTITY: "-"
+
+schemes:
+  Transcribe:
+    build:
+      targets:
+        Transcribe: all
+        TranscribeTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - TranscribeTests
+    archive:
+      config: Release

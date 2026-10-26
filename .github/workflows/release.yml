@@ -1,0 +1,28 @@
+name: Release
+
+# Push a tag such as v0.1.0 to build the DMG and publish it on GitHub Releases.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build DMG
+        run: ./scripts/make-dmg.sh "${GITHUB_REF_NAME#v}"
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          prerelease=""
+          case "$GITHUB_REF_NAME" in v0.*) prerelease="--prerelease" ;; esac
+          gh release create "$GITHUB_REF_NAME" build/*.dmg \
+            --title "scribe-kun $GITHUB_REF_NAME" \
+            --notes-file .github/release-notes.md \
+            --generate-notes \
+            $prerelease

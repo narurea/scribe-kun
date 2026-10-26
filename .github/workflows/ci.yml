@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "feature/**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate Xcode project
+        run: ./scripts/bootstrap.sh
+      - name: Build and test
+        run: |
+          xcodebuild test \
+            -project Transcribe.xcodeproj \
+            -scheme Transcribe \
+            -destination "platform=macOS" \
+            -derivedDataPath build/DerivedData
+
+  dmg:
+    needs: test
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build DMG
+        run: ./scripts/make-dmg.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: scribe-kun-dmg
+          path: build/*.dmg
+          retention-days: 14
