@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct MainView: View {
@@ -6,6 +7,7 @@ struct MainView: View {
     @AppStorage(SettingsKey.model) private var modelRawValue = WhisperModel.default.rawValue
     @AppStorage(SettingsKey.outputFolderBookmark) private var outputFolderBookmark: Data?
     @AppStorage(SettingsKey.notifyOnCompletion) private var notifyOnCompletion = true
+    @State private var folderError: String?
 
     private var model: WhisperModel { WhisperModel(rawValue: modelRawValue) ?? .default }
 
@@ -77,6 +79,8 @@ struct MainView: View {
                 .truncationMode(.middle)
                 .foregroundStyle(.secondary)
                 .help("保存先フォルダ")
+            Button("Finderで開く", action: openOutputFolder)
+                .help("保存先フォルダをFinderで開く")
             Spacer()
             if queue.hasFinishedItems {
                 Button("完了した項目を消去") { queue.removeFinished() }
@@ -88,5 +92,25 @@ struct MainView: View {
         .font(.callout)
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
+        .alert(
+            "保存先フォルダを開けませんでした",
+            isPresented: Binding(get: { folderError != nil }, set: { if !$0 { folderError = nil } })
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(folderError ?? "")
+        }
+    }
+
+    private func openOutputFolder() {
+        do {
+            try OutputFolder.withAccess(bookmark: outputFolderBookmark) { folder in
+                // The default folder does not exist until the first transcript is saved.
+                try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+                _ = NSWorkspace.shared.open(folder)
+            }
+        } catch {
+            folderError = error.localizedDescription
+        }
     }
 }
